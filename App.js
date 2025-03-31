@@ -98,7 +98,7 @@ export default function App() {
 						style={styles.input}
 						onChangeText={handleChangeInputWeight}
 						selectTextOnFocus={true}
-						enterKeyHint='next'
+						enterKeyHint='next' // Android
 						value={medidas.peso}
 						placeholder='30 kg'
 						keyboardType='numeric'
