@@ -9,11 +9,13 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	Image,
-	SafeAreaView,
+	Dimensions,
 } from 'react-native';
 
 import ImageBarraIMC from './assets/barraimc_barras.png';
 import ImageIndicator from './assets/trianguloblanco.png';
+
+const { width: widthDevice } = Dimensions.get('window');
 
 const initialStateResultIMC = { IMC: '', category: { label: '', left: 0 } };
 
@@ -88,95 +90,93 @@ export default function App() {
 	};
 
 	return (
-		<SafeAreaView>
-			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-				<View style={styles.container}>
-					<Text style={styles.title}>Calculadora del índice de masa corporal (IMC)</Text>
+		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+			<View style={styles.container}>
+				<Text style={styles.title}>Calculadora del índice de masa corporal (IMC)</Text>
 
-					<View style={styles.groupInputText}>
-						<Text style={styles.groupInputTextLabel}>Peso (kg):</Text>
+				<View style={styles.groupInputText}>
+					<Text style={styles.groupInputTextLabel}>Peso (kg):</Text>
 
-						<TextInput
-							style={styles.input}
-							onChangeText={handleChangeInputWeight}
-							selectTextOnFocus={true}
-							enterKeyHint='next'
-							value={medidas.peso}
-							placeholder='30 kg'
-							keyboardType='numeric'
-							onSubmitEditing={() => alturaInputRef.current.focus()}
-						/>
-					</View>
-
-					<View style={styles.groupInputText}>
-						<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
-
-						<TextInput
-							ref={alturaInputRef}
-							style={styles.input}
-							onSubmitEditing={calculateIMC}
-							selectTextOnFocus={true}
-							enterKeyHint='enter'
-							value={medidas.altura}
-							placeholder='171 m'
-							keyboardType='numeric'
-							onChangeText={handleChangeInputHeight}
-						/>
-					</View>
-
-					<View style={styles.buttonsGroupContainer}>
-						<TouchableOpacity
-							style={{ ...styles.button, backgroundColor: '#E11D1D' }}
-							onPress={resetValues}
-						>
-							<Text style={styles.buttonText}>Borrar</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={styles.button}
-							onPress={calculateIMC}
-						>
-							<Text style={styles.buttonText}>Calcular</Text>
-						</TouchableOpacity>
-					</View>
-
-					<View style={resultStyles.resultContainer}>
-						<View>
-							<Text style={{ fontSize: 18 }}>
-								IMC: <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{resultIMC.IMC}</Text>
-							</Text>
-							<Text>
-								Estado de salud es de: <Text style={{ fontWeight: 'bold' }}>{resultIMC.category.label}</Text>
-							</Text>
-						</View>
-
-						{resultIMC.IMC && (
-							<View style={{ position: 'relative' }}>
-								<Image
-									source={ImageBarraIMC}
-									style={resultStyles.barraIMC}
-									resizeMode='contain'
-								/>
-
-								<View style={resultStyles.resultText}>
-									<Text>Bajo Peso</Text>
-									<Text>Normal</Text>
-									<Text>Sobrepeso</Text>
-									<Text>Obesidad</Text>
-								</View>
-
-								<Image
-									source={ImageIndicator}
-									style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
-								/>
-							</View>
-						)}
-					</View>
-
-					<StatusBar style='auto' />
+					<TextInput
+						style={styles.input}
+						onChangeText={handleChangeInputWeight}
+						selectTextOnFocus={true}
+						enterKeyHint='next'
+						value={medidas.peso}
+						placeholder='30 kg'
+						keyboardType='numeric'
+						onSubmitEditing={() => alturaInputRef.current.focus()}
+					/>
 				</View>
-			</TouchableWithoutFeedback>
-		</SafeAreaView>
+
+				<View style={styles.groupInputText}>
+					<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
+
+					<TextInput
+						ref={alturaInputRef}
+						style={styles.input}
+						onSubmitEditing={calculateIMC}
+						selectTextOnFocus={true}
+						enterKeyHint='enter'
+						value={medidas.altura}
+						placeholder='171 m'
+						keyboardType='numeric'
+						onChangeText={handleChangeInputHeight}
+					/>
+				</View>
+
+				<View style={styles.buttonsGroupContainer}>
+					<TouchableOpacity
+						style={{ ...styles.button, backgroundColor: '#E11D1D' }}
+						onPress={resetValues}
+					>
+						<Text style={styles.buttonText}>Borrar</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={styles.button}
+						onPress={calculateIMC}
+					>
+						<Text style={styles.buttonText}>Calcular</Text>
+					</TouchableOpacity>
+				</View>
+
+				<View style={resultStyles.resultContainer}>
+					<View>
+						<Text style={{ fontSize: 18 }}>
+							IMC: <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{resultIMC.IMC}</Text>
+						</Text>
+						<Text>
+							Estado de salud es de: <Text style={{ fontWeight: 'bold' }}>{resultIMC.category.label}</Text>
+						</Text>
+					</View>
+
+					{resultIMC.IMC && (
+						<View style={{ position: 'relative' }}>
+							<Image
+								source={ImageBarraIMC}
+								style={resultStyles.barraIMC}
+								resizeMode='contain'
+							/>
+
+							<View style={resultStyles.resultText}>
+								<Text>Bajo Peso</Text>
+								<Text>Normal</Text>
+								<Text>Sobrepeso</Text>
+								<Text>Obesidad</Text>
+							</View>
+
+							<Image
+								source={ImageIndicator}
+								style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
+							/>
+						</View>
+					)}
+				</View>
+
+				<StatusBar style='auto' />
+			</View>
+		</TouchableWithoutFeedback>
 	);
 }
 
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 	},
 	groupInputTextLabel: {
 		fontSize: 18,
-		width: 60,
+		width: 70,
 		marginRight: 10,
 	},
 });
@@ -232,18 +232,20 @@ const styles = StyleSheet.create({
 const resultStyles = StyleSheet.create({
 	resultContainer: {
 		flex: 1,
-		marginTop: 50,
-		width: 383,
+		marginTop: 20,
+		width: widthDevice - 20,
+		maxWidth: 383,
 	},
 	barraIMC: {
-		width: 383,
+		width: widthDevice - 20,
 		height: 83,
 		maxWidth: 383,
 	},
 	resultText: {
 		position: 'absolute',
 		display: 'flex',
-		width: 383,
+		width: widthDevice - 20,
+		maxWidth: 383,
 		borderTopColor: '#cccccc',
 		borderTopWidth: 1,
 
@@ -252,7 +254,7 @@ const resultStyles = StyleSheet.create({
 		paddingInline: 20,
 
 		bottom: 0,
-		height: 15,
+		height: 20,
 	},
 	indicator: {
 		position: 'absolute',
