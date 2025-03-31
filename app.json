@@ -1,27 +1,33 @@
 {
-	"expo": {
-		"name": "calculadora-IMC",
-		"slug": "calculadora-IMC",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/icon/adaptive-icon.png",
-		"userInterfaceStyle": "light",
-		"newArchEnabled": true,
-		"splash": {
-			"image": "./assets/icon/splash-icon.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
-		},
-		"ios": {
-			"supportsTablet": true
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/icon/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
-			}
-		},
-		"autor": "JoseCarlos00",
-		"repository": "https://github.com/JoseCarlos00/calculadora-IMC-app"
-	}
+  "expo": {
+    "name": "calculadora-IMC",
+    "slug": "calculadora-IMC",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon/adaptive-icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/icon/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.joskar00.calculadoraIMC"
+    },
+    "autor": "JoseCarlos00",
+    "repository": "https://github.com/JoseCarlos00/calculadora-IMC-app",
+    "extra": {
+      "eas": {
+        "projectId": "a745d88e-263f-4a30-92bd-25cfba1ad5f6"
+      }
+    }
+  }
 }
