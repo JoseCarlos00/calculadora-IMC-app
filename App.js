@@ -9,18 +9,14 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	Image,
-	Dimensions,
 } from 'react-native';
 
-const { width: widthWindows, height: heightWindows } = Dimensions.get('window');
-console.log({ widthWindows, heightWindows });
-
-import barraIMC from './assets/barraimc_barras.png';
-import indicator from './assets/trianguloblanco.png';
+import ImageBarraIMC from './assets/barraimc_barras.png';
+import ImageIndicator from './assets/trianguloblanco.png';
 
 export default function App() {
 	const [medidas, setMedidas] = useState({ peso: '', altura: '' });
-	const [IMC, setIMC] = useState('');
+	const [resultIMC, setResultIMC] = useState({ IMC: '', category: { label: '', left: 0 } });
 
 	const handleChangeInputWeight = (newValue) => {
 		setMedidas({ ...medidas, peso: newValue });
@@ -32,7 +28,37 @@ export default function App() {
 
 	const resetValues = () => {
 		setMedidas({ peso: '', altura: '' });
-		setIMC('');
+		setResultIMC('');
+	};
+
+	const getStateSalud = (IMC) => {
+		if (!IMC) {
+			return 'No calculado';
+		}
+
+		/**
+		 * Propiedad `left`
+		 * Bajo: 10
+		 * Normal: 120
+		 * Sobrepeso: 210
+		 * Obesidad: 280
+		 */
+
+		if (IMC < 18.5) {
+			return { label: 'Bajo peso', left: 0 };
+		}
+
+		if (IMC >= 18.5 && IMC < 25) {
+			return { label: 'Normal', left: 120 };
+		}
+
+		if (IMC >= 25 && IMC < 30) {
+			return { label: 'Sobrepeso', left: 210 };
+		}
+
+		if (IMC >= 30) {
+			return { label: 'Obesidad', left: 280 };
+		}
 	};
 
 	const calculateIMC = () => {
@@ -44,9 +70,11 @@ export default function App() {
 			altura = altura / 100;
 		}
 
-		const imc = peso / altura ** 2;
+		let imc = peso / altura ** 2;
+		const category = getStateSalud(imc);
 
-		setIMC(imc.toFixed(2));
+		setResultIMC({ IMC: imc.toFixed(2), category });
+		setMedidas({ peso: '', altura: '' });
 		Keyboard.dismiss();
 	};
 
@@ -56,7 +84,7 @@ export default function App() {
 				<Text style={styles.title}>Calculadora del índice de masa corporal (IMC)</Text>
 
 				<View style={styles.groupInputText}>
-					<Text>Peso (kg):</Text>
+					<Text style={styles.groupInputTextLabel}>Peso (kg):</Text>
 
 					<TextInput
 						style={styles.input}
@@ -68,13 +96,14 @@ export default function App() {
 				</View>
 
 				<View style={styles.groupInputText}>
-					<Text>Altura (cm, m):</Text>
+					<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
 
 					<TextInput
 						style={styles.input}
 						onChangeText={handleChangeInputHeight}
 						value={medidas.altura}
 						placeholder='171 m'
+						placeholderTextColor='#000'
 						keyboardType='numeric'
 					/>
 				</View>
@@ -96,16 +125,14 @@ export default function App() {
 				</View>
 
 				<View style={resultStyles.resultContainer}>
-					<View style={styles.row}>
-						<Text>IMC: {IMC}</Text>
+					<View>
+						<Text>IMC: {resultIMC.IMC}</Text>
+						<Text>Estado de salud es de: {resultIMC.category.label}</Text>
 					</View>
-
-					<Text>Estado de salud:</Text>
-					{/* <Text>{estadoSalud}</Text> */}
 
 					<View style={{ position: 'relative' }}>
 						<Image
-							source={barraIMC}
+							source={ImageBarraIMC}
 							style={resultStyles.barraIMC}
 							resizeMode='contain'
 						/>
@@ -116,6 +143,11 @@ export default function App() {
 							<Text>Sobrepeso</Text>
 							<Text>Obesidad</Text>
 						</View>
+
+						<Image
+							source={ImageIndicator}
+							style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
+						/>
 					</View>
 				</View>
 
@@ -142,10 +174,13 @@ const styles = StyleSheet.create({
 		paddingInline: 20,
 	},
 	input: {
+		width: 150,
 		height: 40,
 		margin: 12,
 		borderWidth: 1,
 		padding: 10,
+		color: '#000',
+		fontSize: 16,
 	},
 	button: {
 		backgroundColor: '#29903B',
@@ -164,6 +199,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-evenly',
 	},
+	groupInputTextLabel: {
+		fontSize: 18,
+	},
 });
 
 const resultStyles = StyleSheet.create({
@@ -172,15 +210,29 @@ const resultStyles = StyleSheet.create({
 		marginTop: 50,
 	},
 	barraIMC: {
-		width: widthWindows - 40,
+		width: 383,
 		height: 83,
+		maxWidth: 383,
 	},
 	resultText: {
+		position: 'absolute',
+		display: 'flex',
+		width: 383,
 		borderTopColor: '#cccccc',
 		borderTopWidth: 1,
 
 		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingInline: 20,
 
-		top: -10,
+		bottom: 0,
+		height: 15,
+	},
+	indicator: {
+		position: 'absolute',
+		width: 38,
+		height: 38,
+		top: 12,
+		left: 0,
 	},
 });
