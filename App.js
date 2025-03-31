@@ -1,6 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+	TouchableWithoutFeedback,
+	Keyboard,
+	Image,
+	Dimensions,
+} from 'react-native';
+
+const { width: widthWindows, height: heightWindows } = Dimensions.get('window');
+console.log({ widthWindows, heightWindows });
+
+import barraIMC from './assets/barraimc_barras.png';
+import indicator from './assets/trianguloblanco.png';
 
 export default function App() {
 	const [medidas, setMedidas] = useState({ peso: '', altura: '' });
@@ -79,8 +95,28 @@ export default function App() {
 					</TouchableOpacity>
 				</View>
 
-				<View style={styles.row}>
-					<Text>IMC: {IMC}</Text>
+				<View style={resultStyles.resultContainer}>
+					<View style={styles.row}>
+						<Text>IMC: {IMC}</Text>
+					</View>
+
+					<Text>Estado de salud:</Text>
+					{/* <Text>{estadoSalud}</Text> */}
+
+					<View style={{ position: 'relative' }}>
+						<Image
+							source={barraIMC}
+							style={resultStyles.barraIMC}
+							resizeMode='contain'
+						/>
+
+						<View style={resultStyles.resultText}>
+							<Text>Bajo Peso</Text>
+							<Text>Normal</Text>
+							<Text>Sobrepeso</Text>
+							<Text>Obesidad</Text>
+						</View>
+					</View>
 				</View>
 
 				<StatusBar style='auto' />
@@ -94,6 +130,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#f0f6fc',
 		alignItems: 'center',
+		gap: 20,
 	},
 	row: {
 		flexDirection: 'row',
@@ -126,5 +163,24 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		flexDirection: 'row',
 		justifyContent: 'space-evenly',
+	},
+});
+
+const resultStyles = StyleSheet.create({
+	resultContainer: {
+		flex: 1,
+		marginTop: 50,
+	},
+	barraIMC: {
+		width: widthWindows - 40,
+		height: 83,
+	},
+	resultText: {
+		borderTopColor: '#cccccc',
+		borderTopWidth: 1,
+
+		flexDirection: 'row',
+
+		top: -10,
 	},
 });
