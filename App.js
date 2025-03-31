@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -14,9 +14,13 @@ import {
 import ImageBarraIMC from './assets/barraimc_barras.png';
 import ImageIndicator from './assets/trianguloblanco.png';
 
+const initialStateResultIMC = { IMC: '', category: { label: '', left: 0 } };
+
 export default function App() {
 	const [medidas, setMedidas] = useState({ peso: '', altura: '' });
-	const [resultIMC, setResultIMC] = useState({ IMC: '', category: { label: '', left: 0 } });
+	const [resultIMC, setResultIMC] = useState(initialStateResultIMC);
+
+	const alturaInputRef = useRef(null);
 
 	const handleChangeInputWeight = (newValue) => {
 		setMedidas({ ...medidas, peso: newValue });
@@ -28,7 +32,7 @@ export default function App() {
 
 	const resetValues = () => {
 		setMedidas({ peso: '', altura: '' });
-		setResultIMC('');
+		setResultIMC(initialStateResultIMC);
 	};
 
 	const getStateSalud = (IMC) => {
@@ -66,6 +70,11 @@ export default function App() {
 		const peso = parseFloat(medidas.peso);
 		let altura = parseFloat(medidas.altura);
 
+		if (!peso || !altura) {
+			console.log('No se puede calcular IMC');
+			return;
+		}
+
 		if (Number.isInteger(altura)) {
 			altura = altura / 100;
 		}
@@ -74,7 +83,6 @@ export default function App() {
 		const category = getStateSalud(imc);
 
 		setResultIMC({ IMC: imc.toFixed(2), category });
-		setMedidas({ peso: '', altura: '' });
 		Keyboard.dismiss();
 	};
 
@@ -89,9 +97,12 @@ export default function App() {
 					<TextInput
 						style={styles.input}
 						onChangeText={handleChangeInputWeight}
+						selectTextOnFocus={true}
+						enterKeyHint='next'
 						value={medidas.peso}
 						placeholder='30 kg'
 						keyboardType='numeric'
+						onSubmitEditing={() => alturaInputRef.current.focus()}
 					/>
 				</View>
 
@@ -99,12 +110,15 @@ export default function App() {
 					<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
 
 					<TextInput
+						ref={alturaInputRef}
 						style={styles.input}
-						onChangeText={handleChangeInputHeight}
+						onSubmitEditing={calculateIMC}
+						selectTextOnFocus={true}
+						enterKeyHint='enter'
 						value={medidas.altura}
 						placeholder='171 m'
-						placeholderTextColor='#000'
 						keyboardType='numeric'
+						onChangeText={handleChangeInputHeight}
 					/>
 				</View>
 
@@ -126,29 +140,35 @@ export default function App() {
 
 				<View style={resultStyles.resultContainer}>
 					<View>
-						<Text>IMC: {resultIMC.IMC}</Text>
-						<Text>Estado de salud es de: {resultIMC.category.label}</Text>
+						<Text style={{ fontSize: 18 }}>
+							IMC: <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{resultIMC.IMC}</Text>
+						</Text>
+						<Text>
+							Estado de salud es de: <Text style={{ fontWeight: 'bold' }}>{resultIMC.category.label}</Text>
+						</Text>
 					</View>
 
-					<View style={{ position: 'relative' }}>
-						<Image
-							source={ImageBarraIMC}
-							style={resultStyles.barraIMC}
-							resizeMode='contain'
-						/>
+					{resultIMC.IMC && (
+						<View style={{ position: 'relative' }}>
+							<Image
+								source={ImageBarraIMC}
+								style={resultStyles.barraIMC}
+								resizeMode='contain'
+							/>
 
-						<View style={resultStyles.resultText}>
-							<Text>Bajo Peso</Text>
-							<Text>Normal</Text>
-							<Text>Sobrepeso</Text>
-							<Text>Obesidad</Text>
+							<View style={resultStyles.resultText}>
+								<Text>Bajo Peso</Text>
+								<Text>Normal</Text>
+								<Text>Sobrepeso</Text>
+								<Text>Obesidad</Text>
+							</View>
+
+							<Image
+								source={ImageIndicator}
+								style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
+							/>
 						</View>
-
-						<Image
-							source={ImageIndicator}
-							style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
-						/>
-					</View>
+					)}
 				</View>
 
 				<StatusBar style='auto' />
@@ -170,11 +190,11 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 30,
 		marginBottom: 20,
-		marginTop: 50,
+		marginTop: 80,
 		paddingInline: 20,
 	},
 	input: {
-		width: 150,
+		width: 80,
 		height: 40,
 		margin: 12,
 		borderWidth: 1,
@@ -197,10 +217,12 @@ const styles = StyleSheet.create({
 	groupInputText: {
 		fontSize: 18,
 		flexDirection: 'row',
-		justifyContent: 'space-evenly',
+		justifyContent: 'flex-start',
 	},
 	groupInputTextLabel: {
 		fontSize: 18,
+		width: 60,
+		marginRight: 10,
 	},
 });
 
@@ -208,6 +230,7 @@ const resultStyles = StyleSheet.create({
 	resultContainer: {
 		flex: 1,
 		marginTop: 50,
+		width: 383,
 	},
 	barraIMC: {
 		width: 383,
