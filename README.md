@@ -1,4 +1,5 @@
 # Iniciar proyecto
+---
 
 1. Clonar el repositorio o descargar el archivo zip
 
@@ -23,4 +24,4 @@ npm start
 ---
 
 **Descargar archivo APK**
-[anchor](Descargar archivo calculadora-IMC.apk")
+[https://github.com/JoseCarlos00/calculadora-IMC-app/releases/download/v1.0.0/calculadora-IMC.apk](Descargar archivo calculadora-IMC.apk")
