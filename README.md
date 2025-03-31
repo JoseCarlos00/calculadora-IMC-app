@@ -23,3 +23,4 @@ npm start
 ---
 
 **Descargar archivo APK**
+[anchor](Descargar archivo calculadora-IMC.apk")
