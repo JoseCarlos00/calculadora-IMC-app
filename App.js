@@ -9,6 +9,7 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	Image,
+	SafeAreaView,
 } from 'react-native';
 
 import ImageBarraIMC from './assets/barraimc_barras.png';
@@ -87,93 +88,95 @@ export default function App() {
 	};
 
 	return (
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-			<View style={styles.container}>
-				<Text style={styles.title}>Calculadora del índice de masa corporal (IMC)</Text>
+		<SafeAreaView>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				<View style={styles.container}>
+					<Text style={styles.title}>Calculadora del índice de masa corporal (IMC)</Text>
 
-				<View style={styles.groupInputText}>
-					<Text style={styles.groupInputTextLabel}>Peso (kg):</Text>
+					<View style={styles.groupInputText}>
+						<Text style={styles.groupInputTextLabel}>Peso (kg):</Text>
 
-					<TextInput
-						style={styles.input}
-						onChangeText={handleChangeInputWeight}
-						selectTextOnFocus={true}
-						enterKeyHint='next'
-						value={medidas.peso}
-						placeholder='30 kg'
-						keyboardType='numeric'
-						onSubmitEditing={() => alturaInputRef.current.focus()}
-					/>
-				</View>
-
-				<View style={styles.groupInputText}>
-					<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
-
-					<TextInput
-						ref={alturaInputRef}
-						style={styles.input}
-						onSubmitEditing={calculateIMC}
-						selectTextOnFocus={true}
-						enterKeyHint='enter'
-						value={medidas.altura}
-						placeholder='171 m'
-						keyboardType='numeric'
-						onChangeText={handleChangeInputHeight}
-					/>
-				</View>
-
-				<View style={styles.buttonsGroupContainer}>
-					<TouchableOpacity
-						style={{ ...styles.button, backgroundColor: '#E11D1D' }}
-						onPress={resetValues}
-					>
-						<Text style={styles.buttonText}>Borrar</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={styles.button}
-						onPress={calculateIMC}
-					>
-						<Text style={styles.buttonText}>Calcular</Text>
-					</TouchableOpacity>
-				</View>
-
-				<View style={resultStyles.resultContainer}>
-					<View>
-						<Text style={{ fontSize: 18 }}>
-							IMC: <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{resultIMC.IMC}</Text>
-						</Text>
-						<Text>
-							Estado de salud es de: <Text style={{ fontWeight: 'bold' }}>{resultIMC.category.label}</Text>
-						</Text>
+						<TextInput
+							style={styles.input}
+							onChangeText={handleChangeInputWeight}
+							selectTextOnFocus={true}
+							enterKeyHint='next'
+							value={medidas.peso}
+							placeholder='30 kg'
+							keyboardType='numeric'
+							onSubmitEditing={() => alturaInputRef.current.focus()}
+						/>
 					</View>
 
-					{resultIMC.IMC && (
-						<View style={{ position: 'relative' }}>
-							<Image
-								source={ImageBarraIMC}
-								style={resultStyles.barraIMC}
-								resizeMode='contain'
-							/>
+					<View style={styles.groupInputText}>
+						<Text style={styles.groupInputTextLabel}>Altura (cm, m):</Text>
 
-							<View style={resultStyles.resultText}>
-								<Text>Bajo Peso</Text>
-								<Text>Normal</Text>
-								<Text>Sobrepeso</Text>
-								<Text>Obesidad</Text>
-							</View>
+						<TextInput
+							ref={alturaInputRef}
+							style={styles.input}
+							onSubmitEditing={calculateIMC}
+							selectTextOnFocus={true}
+							enterKeyHint='enter'
+							value={medidas.altura}
+							placeholder='171 m'
+							keyboardType='numeric'
+							onChangeText={handleChangeInputHeight}
+						/>
+					</View>
 
-							<Image
-								source={ImageIndicator}
-								style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
-							/>
+					<View style={styles.buttonsGroupContainer}>
+						<TouchableOpacity
+							style={{ ...styles.button, backgroundColor: '#E11D1D' }}
+							onPress={resetValues}
+						>
+							<Text style={styles.buttonText}>Borrar</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							style={styles.button}
+							onPress={calculateIMC}
+						>
+							<Text style={styles.buttonText}>Calcular</Text>
+						</TouchableOpacity>
+					</View>
+
+					<View style={resultStyles.resultContainer}>
+						<View>
+							<Text style={{ fontSize: 18 }}>
+								IMC: <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{resultIMC.IMC}</Text>
+							</Text>
+							<Text>
+								Estado de salud es de: <Text style={{ fontWeight: 'bold' }}>{resultIMC.category.label}</Text>
+							</Text>
 						</View>
-					)}
-				</View>
 
-				<StatusBar style='auto' />
-			</View>
-		</TouchableWithoutFeedback>
+						{resultIMC.IMC && (
+							<View style={{ position: 'relative' }}>
+								<Image
+									source={ImageBarraIMC}
+									style={resultStyles.barraIMC}
+									resizeMode='contain'
+								/>
+
+								<View style={resultStyles.resultText}>
+									<Text>Bajo Peso</Text>
+									<Text>Normal</Text>
+									<Text>Sobrepeso</Text>
+									<Text>Obesidad</Text>
+								</View>
+
+								<Image
+									source={ImageIndicator}
+									style={{ ...resultStyles.indicator, left: resultIMC.category.left }}
+								/>
+							</View>
+						)}
+					</View>
+
+					<StatusBar style='auto' />
+				</View>
+			</TouchableWithoutFeedback>
+		</SafeAreaView>
 	);
 }
 
